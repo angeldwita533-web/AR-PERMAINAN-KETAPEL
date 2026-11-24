@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Ketapel Tradisional</title>
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/three.js/build/ar-threex.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:Arial,sans-serif; background:#101827; color:white; }
+    #panel {
+      position:fixed; z-index:5; left:12px; right:12px; bottom:12px;
+      background:rgba(15,23,42,.94); border:1px solid #52627d;
+      border-radius:16px; padding:14px; max-width:620px; margin:auto;
+      box-shadow:0 8px 30px #0007;
+    }
+    h1 { font-size:18px; margin:0 0 6px; }
+    #status { font-size:13px; color:#cbd5e1; margin-bottom:10px; }
+    .buttons { display:flex; gap:8px; flex-wrap:wrap; }
+    button {
+      border:0; border-radius:10px; padding:10px 12px; font-weight:bold;
+      background:#2563eb; color:white; cursor:pointer;
+    }
+    button.active { background:#0f766e; }
+    #detail { font-size:13px; line-height:1.45; color:#e2e8f0; margin-top:10px; }
+    #detail b { color:#93c5fd; }
+    .hint { font-size:11px; color:#94a3b8; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <a-scene embedded
+    vr-mode-ui="enabled:false"
+    renderer="logarithmicDepthBuffer:true; precision:medium;"
+    arjs="trackingMethod:best; sourceType:webcam; debugUIEnabled:false;">
+    <a-marker preset="hiro">
+      <!-- Model edukatif statis: bentuk Y dari kayu, tanpa animasi pelontaran -->
+      <a-entity position="0 0 0">
+        <!-- Pegangan -->
+        <a-cylinder position="0 0.62 0" radius="0.095" height="1.05"
+          rotation="0 0 0" color="#8b542b" material="roughness:0.9"></a-cylinder>
+        <!-- Cabang kiri dan kanan -->
+        <a-cylinder position="-0.27 1.13 0" radius="0.075" height="0.78"
+          rotation="0 0 -38" color="#a66a35"></a-cylinder>
+        <a-cylinder position="0.27 1.13 0" radius="0.075" height="0.78"
+          rotation="0 0 38" color="#a66a35"></a-cylinder>
+        <!-- Sambungan dan ujung -->
+        <a-sphere position="0 0.98 0" radius="0.12" color="#70421f"></a-sphere>
+        <a-sphere position="-0.51 1.43 0" radius="0.09" color="#70421f"></a-sphere>
+        <a-sphere position="0.51 1.43 0" radius="0.09" color="#70421f"></a-sphere>
+        <!-- Pita karet sebagai garis visual -->
+        <a-cylinder position="0 1.47 0" radius="0.018" height="1.02"
+          rotation="0 0 90" color="#263238"></a-cylinder>
+        <!-- Alas kecil -->
+        <a-cylinder position="0 0.08 0" radius="0.22" height="0.06" color="#64748b"></a-cylinder>
+
+        <!-- Label edukatif -->
+        <a-text value="CABANG KETAPEL" position="-1.05 1.68 0.02"
+          color="#ffffff" width="2.2" align="center" scale="0.55 0.55 0.55"></a-text>
+        <a-text value="PEGANGAN" position="0.72 0.62 0.02"
+          color="#ffffff" width="1.8" align="center" scale="0.55 0.55 0.55"></a-text>
+        <a-text value="KARET (VISUALISASI)" position="0 1.82 0.02"
+          color="#ffffff" width="2.4" align="center" scale="0.48 0.48 0.48"></a-text>
+        <a-text value="KETAPEL TRADISIONAL" position="0 2.05 0.02"
+          color="#ffdf80" width="3.1" align="center" scale="0.55 0.55 0.55"></a-text>
+      </a-entity>
+    </a-marker>
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <section id="panel">
+    <h1>AR Ketapel Tradisional</h1>
+    <div id="status">Arahkan kamera ke marker Hiro untuk menampilkan model 3D.</div>
+    <div class="buttons">
+      <button class="active" data-topic="bagian">Bagian objek</button>
+      <button data-topic="gaya">Gaya</button>
+      <button data-topic="energi">Usaha & energi</button>
+      <button data-topic="refleksi">Refleksi</button>
+    </div>
+    <div id="detail"><b>Bagian objek:</b> Amati bentuk cabang, pegangan, dan karet pada model. Model ini merupakan ilustrasi edukatif, bukan replika teknis.</div>
+    <div class="hint">Catatan: izinkan akses kamera. Gunakan marker Hiro yang disediakan dalam folder proyek.</div>
+  </section>
+
+  <script>
+    const content = {
+      bagian: "<b>Bagian objek:</b> Amati cabang, pegangan, dan karet pada model 3D. Ketiganya ditampilkan untuk mengenali bentuk umum ketapel tradisional.",
+      gaya: "<b>Konsep gaya:</b> Gaya adalah tarikan atau dorongan yang dapat memengaruhi gerak maupun bentuk benda. Karet merupakan contoh bahan elastis yang dapat berubah bentuk ketika diberi gaya.",
+      energi: "<b>Usaha dan energi:</b> Dalam konsep fisika, usaha terjadi ketika gaya menyebabkan perpindahan. Bahan elastis yang berubah bentuk dapat menyimpan energi potensial elastis. Bahas perubahan energi ini secara konseptual, tanpa melakukan pelontaran.",
+      refleksi: "<b>Pertanyaan refleksi:</b> 1) Bagian mana yang dapat mengalami perubahan bentuk? 2) Apa perbedaan gaya dan usaha? 3) Mengapa bahan elastis dapat menyimpan energi?"
+    };
+    document.querySelectorAll("button[data-topic]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("button[data-topic]").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById("detail").innerHTML = content[btn.dataset.topic];
+      });
+    });
+    const marker = document.querySelector("a-marker");
+    marker.addEventListener("markerFound", () => {
+      document.getElementById("status").textContent = "Marker terdeteksi — model 3D ditampilkan.";
+    });
+    marker.addEventListener("markerLost", () => {
+      document.getElementById("status").textContent = "Marker belum terlihat. Arahkan kamera kembali ke marker Hiro.";
+    });
+  </script>
+</body>
+</html>
